@@ -1,0 +1,14 @@
+name: "Distill Website"
+title: "My Website"
+description: |
+  My Website
+output_dir: "_site"
+navbar:
+  right:
+    - text: "Home"
+      href: index.html
+    - text: "Workbook"
+      href: about.html
+    - text: "About Me"
+      href: aboutme.html
+output: distill::distill_article

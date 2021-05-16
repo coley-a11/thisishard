@@ -1,0 +1,14 @@
+---
+title: "Nicole Thomas"
+image: "image0.jpeg"
+links:
+
+  - label: GitHub
+    url: "https://github.com/coley-a11"
+  - label: Email
+    url: "mailto:nicole.emily@icloud.com"
+output:
+  postcards::jolla
+---
+
+I am currently studying towards by Bachelor of Science w/ Honours in psycholgy at Victoria University of Wellington. My hobbies include exercise, social media, and hating myself.

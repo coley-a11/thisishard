@@ -1,0 +1,166 @@
+---
+title: "Week 10 Workbook"
+description: |
+  Predicitng GPA in College Students
+---
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library("brms")
+library("lme4")
+library("sjPlot")
+library(report)
+library(equatiomatic)
+devtools::install_github("sjPlot/sjmisc")
+```
+
+# Does GPA improve over the duration of a Degree?
+
+The current report will investigate whether GPA improve over the duration of a 3 year degree. A longitudinal study including a sample of 200 students measured GPA at six timepoints (one for each semester of their degree over 3 years). The highest GPA that one can obtain is a 4. As can be seen in table one, it appears that over the course of a degree, students GPA tends to increase. However this could change based on both the student and the semester they are in.
+
+***Table One -*** Means and Standard Deviations of GPA over the course of a degree
+
+```{r setting up data, echo=FALSE}
+# reading in the dataset
+GPA <- rio::import("https://stats.idre.ucla.edu/wp-content/uploads/2016/02/gpa_ch5_hox.dat",
+   format ="csv")
+# extracting variables that may be interesting to investigate
+df <- GPA[,c(1,2,3,4,7,8)]
+
+#renaming variables
+names(df)[1] <- "Student"
+names(df)[2] <- "Highschool.GPA"
+names(df)[3] <- "GPA"
+names(df)[4] <- "Hours.Worked"
+names(df)[5] <- "Time"
+names(df)[6] <- "Sex"
+
+# summarizing the means and SD of GPA over the course of a degree
+d1 <- df %>% 
+  group_by(Time) %>% 
+  summarise(mean_GPA = mean(GPA, na.rm = TRUE),
+            sd_GPA = sd(GPA, na.rm = TRUE))
+
+# putting GPA means and SD into a table
+means <- matrix(c(2.5935, 2.7155, 2.8100, 2.9180, 3.0190, 3.1340,
+                  0.3117591, 0.3362665, 0.3537310, 0.3551148, 0.3581625, 0.3769009),ncol=2,byrow=FALSE)
+colnames(means) <- c("Mean GPA", "SD")
+rownames(means) <- c("Year 1, Semester 1","Year 1, Semester 2",
+                       "Year 2, Semester 1","Year 2, Semester 2",
+                       "Year 3, Semester 1","Year 3, Semester 2")
+means <- as.table(means)
+means
+```
+
+## Predicting GPA with Time
+
+```{r echo=FALSE}
+# linear model with predictors
+lm1 <- lm(GPA ~ Time, data = df)
+#report::report(lm1)
+equatiomatic::extract_eq(lm1, use_coefs = TRUE)
+```
+
+We fitted a linear model to predict GPA with Time (formula: GPA ~ Time). The model explains a statistically significant and moderate proportion of variance (R^2^ = 0.21, F(1, 1198) = 325.34, *p* < .001, adj. R^2^ = 0.21). The model's intercept, corresponding to Time = 0, is at 2.60 (95% CI [2.56, 2.63], t(1198) = 145.65, p < .001), indicating that the average GPA within the first semester of an individuals degree is predicted to be 2.6 (B^-^). Within this model:
+
+  - The effect of Time is statistically significant and positive (beta = 0.11, 95% CI [0.09, 0.12], t(1198) = 18.04, *p* < .001; Std. beta = 0.46, 95% CI [0.41, 0.51]). Indicating that for each additional semester studied, GPA will tend to increase by 0.11 units. This would represent 1/3 of the increase required to increase a letter boundary. Therefore, for someone who studies for 6 semesters (a full degree) we would expect their final GPA to be 2 letter grades higher than in their first semester. For our intercept, that means GPA would increase from a B^-^ to a B^+^.
+
+# Predicting GPA with a Mixed-Effect model (Random Slopes and Intercepts)
+
+As can be seen in Figure 1, GPA varies quite a bit between times in the students degree and within the individual student. In the same figure we can see that in general, as a student gets further through their degree, the higher their GPA gets. Due to this, we will investigate the fixed effect of Time on GPA scores, as well as the random effect of Time and Student. That is, we are investigating, does more semesters studied increase one's GPA, with the assumption that Students vary in both their baseline GPA and the change in their GPA over semesters.
+
+***Figure 1*** - Mean GPA for each student over the period of their course
+
+```{r echo=FALSE}
+# changing to factors for graphing purposes
+df$Student <-as.factor(df$Student)
+df$Time <-as.factor(df$Time)
+
+#Graphing GPA by time grouped by student
+ggplot(df, aes(x = Time, y = GPA, group = Student)) +
+  geom_line(alpha = 0.1, colour= "deeppink2")+
+  geom_point(alpha = 0.1, colour= "deeppink2")+
+  theme_minimal()
+```
+
+*Note* - Each time point reflects a different semester in the students degree (0 = Year 1, Semester 1, 1 = Year 1, Semester 2, 2 = Year 2 = Semester 1, etc.)
+
+***Table Two -*** Mixed model predicting GPA
+
+```{r echo=FALSE}
+# reconfiguring dataset
+df <- GPA[,c(1,2,3,4,7,8)]
+#renaming
+names(df)[1] <- "Student"
+names(df)[2] <- "Highschool.GPA"
+names(df)[3] <- "GPA"
+names(df)[4] <- "Hours.Worked"
+names(df)[5] <- "Time"
+names(df)[6] <- "Sex"
+
+# fixed effect is time (does more time in degree = higher GPA?)
+# Random effects, students vary in terms of their starting GPA and their GPA over semesters
+m1 <- lmer(GPA ~ 1 + Time + (1 + Time| Student), data = df)
+#summary(m1)
+
+ran_tot_var <- 0.045193 + 0.004504 + 0.042388
+ran_var_student <- 0.045193/ran_tot_var
+ran_var_time <- 0.004504/ran_tot_var
+
+
+ran_var_student <- ran_var_student * 100
+
+# report(m1, ci = 0.95)
+
+sjPlot::tab_model(m1, 
+                  show.re.var= TRUE, 
+                  pred.labels =c("(Intercept)", "Semester"),
+                  dv.labels= "Effect of Semester on GPA")
+
+```
+
+We fitted a linear mixed model (estimated using REML and nloptwrap optimizer) to predict GPA with Time (formula: GPA \~ 1 + Time). The model included Time and Student as random effects (formula: \~1 + Time \| Student). The model's total explanatory power is substantial (conditional R^2^ = 0.73) and the part related to the fixed effects alone (marginal R^2^) is of 0.21. Evidently, the addition of the random effects of Time and Student further improved how much variance is explained by the model. Furthermore, the random effect of student explains approximately half of the variance in GPA (~ 49%). Additionally, random effects have a correlation of -0.1, indicating that when a students GPA intercept decreases, their slope increases.
+
+The equation for this model is as follows
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+equatiomatic::extract_eq(m1)
+```
+
+# Predicting GPA with a Mixed-Effect model and additional fixed effects
+
+The amount of time that one spends working during a semester is likely to impact the GPA that the individual achieves. Furthermore, it may be possible that Sex influences GPA as well as the students leaving GPA from high school.
+
+Due to this, we will fit an additional mixed effect model that includes the predictors `Sex`, `Hours.Worked` and `Highschool.GPA` as further fixed effects in the above model.
+
+```{r}
+m2 <- lmer(GPA ~ 1 + Time + Sex + Highschool.GPA + Hours.Worked + (1 + Time| Student), data = df)
+#summary(m2)
+#report(m2, ci = 0.95)
+```
+
+We fitted a linear mixed model (estimated using REML and nloptwrap optimizer) to predict GPA with Time, Sex, Highschool.GPA and Hours.Worked (formula: GPA ~ 1 + Time + Sex + Highschool.GPA + Hours.Worked). The model included Time and Student as random effects (formula: ~1 + Time | Student). The model's total explanatory power is substantial (conditional R^2^ = 0.71) and the part related to the fixed effects alone (marginal R^2^) is of 0.29. The model's intercept, corresponding to Time = 0, Sex = 0, Highschool.GPA = 0 and Hours.Worked = 0, is at 2.53 (95% CI [2.34, 2.71], t(1191) = 27.11, *p* < .001). Within this model:
+
+  - The effect of Time is statistically significant and positive (beta = 0.10, 95% CI [0.09, 0.12], t(1191) = 18.44, *p* < .001; Std. beta = 0.45, 95% CI [0.40, 0.50])
+  - The effect of Sex is statistically significant and positive (beta = 0.12, 95% CI [0.05, 0.18], t(1191) = 3.67, *p* < .001; Std. beta = 0.15, 95% CI [0.07, 0.23])
+  - The effect of Highschool.GPA is statistically significant and positive (beta = 0.09, 95% CI [0.04, 0.14], t(1191) = 3.37, *p* < .001; Std. beta = 0.14, 95% CI [0.06, 0.22])
+  - The effect of Hours.Worked is statistically significant and negative (beta = -0.12, 95% CI [-0.15, -0.09], t(1191) = -6.82, *p* < .001; Std. beta = -0.13, 95% CI [-0.17, -0.09])
+  
+From this we can see that those who a) are further though their degree, b) are female and c) had a higher high-school GPA, will have higher predicted GPA's than those who are at the beginning of their degree, graduated highschool with a lower GPA and are male. However, those that work more hours will tend to have a lower GPA than those that work less.
+
+Despite this, the second model (with additional fixed effects) does not explain more variance in GPA scores than the original model with Time as the only fixed effect. Despite this, the later model appears to be a better model to predict GPA than the former. And both of these are much better than the linear model with not random effects.
+
+***Figure 2*** - Model Comparison comparing mixed model with limited fixed effects to mixed model with 4 fixed effects (Plot 1) and both mixed models to the linear model
+
+```{r echo=FALSE}
+per_home <-performance::compare_performance(m1,m2)
+plot(per_home)
+per_home2 <-performance::compare_performance(lm1,m1,m2)
+plot(per_home2)
+```
+
+# Conclusions
+
+In conclusion, GPA tends to increase as a student progresses throughout their degree. However this is dependant on both the student and the semester in which GPA is measured. Additionally, there is a negative correlation with the fixed effects, such that a decrease in a students GPA intercept will increase their slope. This may indicate that a student that is struggling may try harder in subsequent semesters to achieve better grades.
