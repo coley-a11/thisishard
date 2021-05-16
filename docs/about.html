@@ -86,29 +86,29 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
 </style>
 
   <!--radix_placeholder_meta_tags-->
-  <title>My Website: About this site</title>
+  <title>My Website: Week 10 Workbook</title>
 
-  <meta property="description" itemprop="description" content="Some additional details about the website"/>
+  <meta property="description" itemprop="description" content="Predicitng GPA in College Students"/>
 
 
 
   <!--  https://developers.facebook.com/docs/sharing/webmasters#markup -->
-  <meta property="og:title" content="My Website: About this site"/>
+  <meta property="og:title" content="My Website: Week 10 Workbook"/>
   <meta property="og:type" content="article"/>
-  <meta property="og:description" content="Some additional details about the website"/>
+  <meta property="og:description" content="Predicitng GPA in College Students"/>
   <meta property="og:locale" content="en_US"/>
   <meta property="og:site_name" content="My Website"/>
 
   <!--  https://dev.twitter.com/cards/types/summary -->
   <meta property="twitter:card" content="summary"/>
-  <meta property="twitter:title" content="My Website: About this site"/>
-  <meta property="twitter:description" content="Some additional details about the website"/>
+  <meta property="twitter:title" content="My Website: Week 10 Workbook"/>
+  <meta property="twitter:description" content="Predicitng GPA in College Students"/>
 
   <!--/radix_placeholder_meta_tags-->
   <!--radix_placeholder_rmarkdown_metadata-->
 
   <script type="text/json" id="radix-rmarkdown-metadata">
-  {"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["title","description"]}},"value":[{"type":"character","attributes":{},"value":["About this site"]},{"type":"character","attributes":{},"value":["Some additional details about the website"]}]}
+  {"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["title","description"]}},"value":[{"type":"character","attributes":{},"value":["Week 10 Workbook"]},{"type":"character","attributes":{},"value":["Predicitng GPA in College Students"]}]}
   </script>
   <!--/radix_placeholder_rmarkdown_metadata-->
   <!--radix_placeholder_navigation_in_header-->
@@ -2053,7 +2053,7 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
 <!--radix_placeholder_front_matter-->
 
 <script id="distill-front-matter" type="text/json">
-{"title":"About this site","description":"Some additional details about the website","authors":[]}
+{"title":"Week 10 Workbook","description":"Predicitng GPA in College Students","authors":[]}
 </script>
 
 <!--/radix_placeholder_front_matter-->
@@ -2065,7 +2065,8 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
 </div>
 <div class="nav-right">
 <a href="index.html">Home</a>
-<a href="about.html">About</a>
+<a href="about.html">Workbook</a>
+<a href="aboutme.html">About Me</a>
 <a href="javascript:void(0);" class="nav-toggle">&#9776;</a>
 </div>
 </nav>
@@ -2075,15 +2076,223 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
 <!--/radix_placeholder_site_before_body-->
 
 <div class="d-title">
-<h1>About this site</h1>
+<h1>Week 10 Workbook</h1>
 <!--radix_placeholder_categories-->
 <!--/radix_placeholder_categories-->
-<p><p>Some additional details about the website</p></p>
+<p><p>Predicitng GPA in College Students</p></p>
 </div>
 
 
 <div class="d-article">
-<div class="sourceCode" id="cb1"><pre class="sourceCode r distill-force-highlighting-css"><code class="sourceCode r"></code></pre></div>
+<h1 id="does-gpa-improve-over-the-duration-of-a-degree">Does GPA improve over the duration of a Degree?</h1>
+<p>The current report will investigate whether GPA improve over the duration of a 3 year degree. A longitudinal study including a sample of 200 students measured GPA at six timepoints (one for each semester of their degree over 3 years). The highest GPA that one can obtain is a 4. As can be seen in table one, it appears that over the course of a degree, students GPA tends to increase. However this could change based on both the student and the semester they are in.</p>
+<p><strong><em>Table One -</em></strong> Means and Standard Deviations of GPA over the course of a degree</p>
+<div class="layout-chunk" data-layout="l-body">
+<pre><code>                    Mean GPA        SD
+Year 1, Semester 1 2.5935000 0.3117591
+Year 1, Semester 2 2.7155000 0.3362665
+Year 2, Semester 1 2.8100000 0.3537310
+Year 2, Semester 2 2.9180000 0.3551148
+Year 3, Semester 1 3.0190000 0.3581625
+Year 3, Semester 2 3.1340000 0.3769009</code></pre>
+</div>
+<h2 id="predicting-gpa-with-time">Predicting GPA with Time</h2>
+<div class="layout-chunk" data-layout="l-body">
+<p><span class="math display">\[
+\operatorname{\widehat{GPA}} = 2.6 + 0.11(\operatorname{Time})
+\]</span></p>
+</div>
+<p>We fitted a linear model to predict GPA with Time (formula: GPA ~ Time). The model explains a statistically significant and moderate proportion of variance (R<sup>2</sup> = 0.21, F(1, 1198) = 325.34, <em>p</em> &lt; .001, adj. R<sup>2</sup> = 0.21). The model’s intercept, corresponding to Time = 0, is at 2.60 (95% CI [2.56, 2.63], t(1198) = 145.65, p &lt; .001), indicating that the average GPA within the first semester of an individuals degree is predicted to be 2.6 (B<sup>-</sup>). Within this model:</p>
+<ul>
+<li>The effect of Time is statistically significant and positive (beta = 0.11, 95% CI [0.09, 0.12], t(1198) = 18.04, <em>p</em> &lt; .001; Std. beta = 0.46, 95% CI [0.41, 0.51]). Indicating that for each additional semester studied, GPA will tend to increase by 0.11 units. This would represent 1/3 of the increase required to increase a letter boundary. Therefore, for someone who studies for 6 semesters (a full degree) we would expect their final GPA to be 2 letter grades higher than in their first semester. For our intercept, that means GPA would increase from a B<sup>-</sup> to a B<sup>+</sup>.</li>
+</ul>
+<h1 id="predicting-gpa-with-a-mixed-effect-model-random-slopes-and-intercepts">Predicting GPA with a Mixed-Effect model (Random Slopes and Intercepts)</h1>
+<p>As can be seen in Figure 1, GPA varies quite a bit between times in the students degree and within the individual student. In the same figure we can see that in general, as a student gets further through their degree, the higher their GPA gets. Due to this, we will investigate the fixed effect of Time on GPA scores, as well as the random effect of Time and Student. That is, we are investigating, does more semesters studied increase one’s GPA, with the assumption that Students vary in both their baseline GPA and the change in their GPA over semesters.</p>
+<p><strong><em>Figure 1</em></strong> - Mean GPA for each student over the period of their course</p>
+<div class="layout-chunk" data-layout="l-body">
+<p><img src="about_files/figure-html5/unnamed-chunk-2-1.png" width="624" /></p>
+</div>
+<p><em>Note</em> - Each time point reflects a different semester in the students degree (0 = Year 1, Semester 1, 1 = Year 1, Semester 2, 2 = Year 2 = Semester 1, etc.)</p>
+<p><strong><em>Table Two -</em></strong> Mixed model predicting GPA</p>
+<div class="layout-chunk" data-layout="l-body">
+<table style="border-collapse:collapse; border:none;">
+<tr>
+<th style="border-top: double; text-align:center; font-style:normal; font-weight:bold; padding:0.2cm;  text-align:left; ">
+ 
+</th>
+<th colspan="3" style="border-top: double; text-align:center; font-style:normal; font-weight:bold; padding:0.2cm; ">
+Effect of Semester on GPA
+</th>
+</tr>
+<tr>
+<td style=" text-align:center; border-bottom:1px solid; font-style:italic; font-weight:normal;  text-align:left; ">
+Predictors
+</td>
+<td style=" text-align:center; border-bottom:1px solid; font-style:italic; font-weight:normal;  ">
+Estimates
+</td>
+<td style=" text-align:center; border-bottom:1px solid; font-style:italic; font-weight:normal;  ">
+CI
+</td>
+<td style=" text-align:center; border-bottom:1px solid; font-style:italic; font-weight:normal;  ">
+p
+</td>
+</tr>
+<tr>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:left; ">
+(Intercept)
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+2.60
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+2.56 – 2.64
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+<strong>&lt;0.001
+</td>
+</tr>
+<tr>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:left; ">
+Semester
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+0.11
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+0.09 – 0.12
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+<strong>&lt;0.001
+</td>
+</tr>
+<tr>
+<td colspan="4" style="font-weight:bold; text-align:left; padding-top:.8em;">
+Random Effects
+</td>
+</tr>
+<tr>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:left; padding-top:0.1cm; padding-bottom:0.1cm;">
+σ<sup>2</sup>
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; padding-top:0.1cm; padding-bottom:0.1cm; text-align:left;" colspan="3">
+0.04
+</td>
+<tr>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:left; padding-top:0.1cm; padding-bottom:0.1cm;">
+τ<sub>00</sub> <sub>Student</sub>
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; padding-top:0.1cm; padding-bottom:0.1cm; text-align:left;" colspan="3">
+0.05
+</td>
+<tr>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:left; padding-top:0.1cm; padding-bottom:0.1cm;">
+τ<sub>11</sub> <sub>Student.Time</sub>
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; padding-top:0.1cm; padding-bottom:0.1cm; text-align:left;" colspan="3">
+0.00
+</td>
+<tr>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:left; padding-top:0.1cm; padding-bottom:0.1cm;">
+ρ<sub>01</sub> <sub>Student</sub>
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; padding-top:0.1cm; padding-bottom:0.1cm; text-align:left;" colspan="3">
+-0.10
+</td>
+<tr>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:left; padding-top:0.1cm; padding-bottom:0.1cm;">
+ICC
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; padding-top:0.1cm; padding-bottom:0.1cm; text-align:left;" colspan="3">
+0.65
+</td>
+<tr>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:left; padding-top:0.1cm; padding-bottom:0.1cm;">
+N <sub>Student</sub>
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; padding-top:0.1cm; padding-bottom:0.1cm; text-align:left;" colspan="3">
+200
+</td>
+<tr>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:left; padding-top:0.1cm; padding-bottom:0.1cm; border-top:1px solid;">
+Observations
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; padding-top:0.1cm; padding-bottom:0.1cm; text-align:left; border-top:1px solid;" colspan="3">
+1200
+</td>
+</tr>
+<tr>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:left; padding-top:0.1cm; padding-bottom:0.1cm;">
+Marginal R<sup>2</sup> / Conditional R<sup>2</sup>
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; padding-top:0.1cm; padding-bottom:0.1cm; text-align:left;" colspan="3">
+0.213 / 0.726
+</td>
+</tr>
+</table>
+</div>
+<p>We fitted a linear mixed model (estimated using REML and nloptwrap optimizer) to predict GPA with Time (formula: GPA ~ 1 + Time). The model included Time and Student as random effects (formula: ~1 + Time | Student). The model’s total explanatory power is substantial (conditional R<sup>2</sup> = 0.73) and the part related to the fixed effects alone (marginal R<sup>2</sup>) is of 0.21. Evidently, the addition of the random effects of Time and Student further improved how much variance is explained by the model. Furthermore, the random effect of student explains approximately half of the variance in GPA (~ 49%). Additionally, random effects have a correlation of -0.1, indicating that when a students GPA intercept decreases, their slope increases.</p>
+<p>The equation for this model is as follows</p>
+<div class="layout-chunk" data-layout="l-body">
+<p><span class="math display">\[
+\begin{aligned}
+  \operatorname{GPA}_{i}  &amp;\sim N \left(\alpha_{j[i]} + \beta_{1j[i]}(\operatorname{Time}), \sigma^2 \right) \\    
+\left(
+  \begin{array}{c} 
+    \begin{aligned}
+      &amp;\alpha_{j} \\
+      &amp;\beta_{1j}
+    \end{aligned}
+  \end{array}
+\right)
+  &amp;\sim N \left(
+\left(
+  \begin{array}{c} 
+    \begin{aligned}
+      &amp;\mu_{\alpha_{j}} \\
+      &amp;\mu_{\beta_{1j}}
+    \end{aligned}
+  \end{array}
+\right)
+, 
+\left(
+  \begin{array}{cc}
+     \sigma^2_{\alpha_{j}} &amp; \rho_{\alpha_{j}\beta_{1j}} \\ 
+     \rho_{\beta_{1j}\alpha_{j}} &amp; \sigma^2_{\beta_{1j}}
+  \end{array}
+\right)
+ \right)
+    \text{, for Student j = 1,} \dots \text{,J}
+\end{aligned}
+\]</span></p>
+</div>
+<h1 id="predicting-gpa-with-a-mixed-effect-model-and-additional-fixed-effects">Predicting GPA with a Mixed-Effect model and additional fixed effects</h1>
+<p>The amount of time that one spends working during a semester is likely to impact the GPA that the individual achieves. Furthermore, it may be possible that Sex influences GPA as well as the students leaving GPA from high school.</p>
+<p>Due to this, we will fit an additional mixed effect model that includes the predictors <code>Sex</code>, <code>Hours.Worked</code> and <code>Highschool.GPA</code> as further fixed effects in the above model.</p>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span class='va'>m2</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/lme4/man/lmer.html'>lmer</a></span><span class='op'>(</span><span class='va'>GPA</span> <span class='op'>~</span> <span class='fl'>1</span> <span class='op'>+</span> <span class='va'>Time</span> <span class='op'>+</span> <span class='va'>Sex</span> <span class='op'>+</span> <span class='va'>Highschool.GPA</span> <span class='op'>+</span> <span class='va'>Hours.Worked</span> <span class='op'>+</span> <span class='op'>(</span><span class='fl'>1</span> <span class='op'>+</span> <span class='va'>Time</span><span class='op'>|</span> <span class='va'>Student</span><span class='op'>)</span>, data <span class='op'>=</span> <span class='va'>df</span><span class='op'>)</span>
+<span class='co'>#summary(m2)</span>
+<span class='co'>#report(m2, ci = 0.95)</span>
+</code></pre>
+</div>
+</div>
+<p>We fitted a linear mixed model (estimated using REML and nloptwrap optimizer) to predict GPA with Time, Sex, Highschool.GPA and Hours.Worked (formula: GPA ~ 1 + Time + Sex + Highschool.GPA + Hours.Worked). The model included Time and Student as random effects (formula: ~1 + Time | Student). The model’s total explanatory power is substantial (conditional R<sup>2</sup> = 0.71) and the part related to the fixed effects alone (marginal R<sup>2</sup>) is of 0.29. The model’s intercept, corresponding to Time = 0, Sex = 0, Highschool.GPA = 0 and Hours.Worked = 0, is at 2.53 (95% CI [2.34, 2.71], t(1191) = 27.11, <em>p</em> &lt; .001). Within this model:</p>
+<ul>
+<li>The effect of Time is statistically significant and positive (beta = 0.10, 95% CI [0.09, 0.12], t(1191) = 18.44, <em>p</em> &lt; .001; Std. beta = 0.45, 95% CI [0.40, 0.50])</li>
+<li>The effect of Sex is statistically significant and positive (beta = 0.12, 95% CI [0.05, 0.18], t(1191) = 3.67, <em>p</em> &lt; .001; Std. beta = 0.15, 95% CI [0.07, 0.23])</li>
+<li>The effect of Highschool.GPA is statistically significant and positive (beta = 0.09, 95% CI [0.04, 0.14], t(1191) = 3.37, <em>p</em> &lt; .001; Std. beta = 0.14, 95% CI [0.06, 0.22])</li>
+<li>The effect of Hours.Worked is statistically significant and negative (beta = -0.12, 95% CI [-0.15, -0.09], t(1191) = -6.82, <em>p</em> &lt; .001; Std. beta = -0.13, 95% CI [-0.17, -0.09])</li>
+</ul>
+<p>From this we can see that those who a) are further though their degree, b) are female and c) had a higher high-school GPA, will have higher predicted GPA’s than those who are at the beginning of their degree, graduated highschool with a lower GPA and are male. However, those that work more hours will tend to have a lower GPA than those that work less.</p>
+<p>Despite this, the second model (with additional fixed effects) does not explain more variance in GPA scores than the original model with Time as the only fixed effect. Despite this, the later model appears to be a better model to predict GPA than the former. And both of these are much better than the linear model with not random effects.</p>
+<p><strong><em>Figure 2</em></strong> - Model Comparison comparing mixed model with limited fixed effects to mixed model with 4 fixed effects (Plot 1) and both mixed models to the linear model</p>
+<div class="layout-chunk" data-layout="l-body">
+<p><img src="about_files/figure-html5/unnamed-chunk-6-1.png" width="624" /><img src="about_files/figure-html5/unnamed-chunk-6-2.png" width="624" /></p>
+</div>
+<h1 id="conclusions">Conclusions</h1>
+<p>In conclusion, GPA tends to increase as a student progresses throughout their degree. However this is dependant on both the student and the semester in which GPA is measured. Additionally, there is a negative correlation with the fixed effects, such that a decrease in a students GPA intercept will increase their slope. This may indicate that a student that is struggling may try harder in subsequent semesters to achieve better grades.</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r distill-force-highlighting-css"><code class="sourceCode r"></code></pre></div>
 <!--radix_placeholder_article_footer-->
 <!--/radix_placeholder_article_footer-->
 </div>
@@ -2091,6 +2300,15 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
 <div class="d-appendix">
 </div>
 
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
 
 <!--radix_placeholder_site_after_body-->
 <!--/radix_placeholder_site_after_body-->
